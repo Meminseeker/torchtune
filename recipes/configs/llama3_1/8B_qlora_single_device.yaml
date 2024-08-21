@@ -21,8 +21,8 @@ model:
   lora_attn_modules: ['q_proj', 'v_proj', 'k_proj', 'output_proj']
   apply_lora_to_mlp: True
   apply_lora_to_output: False
-  lora_rank: 64
-  lora_alpha: 128
+  lora_rank: 8
+  lora_alpha: 16
 
 # Tokenizer
 tokenizer:
@@ -47,9 +47,10 @@ save_adapter_weights_only: False
 # Dataset and Sampler
 dataset:
   _component_: torchtune.datasets.alpaca_cleaned_dataset
+  max_seq_len: 2048
 seed: null
 shuffle: True
-batch_size: 12
+batch_size: 10
 
 # Optimizer and Scheduler
 optimizer:
@@ -66,7 +67,7 @@ loss:
 # Training
 epochs: 1
 max_steps_per_epoch: null
-gradient_accumulation_steps: 16
+gradient_accumulation_steps: 4
 compile: False
 
 # Logging
@@ -75,7 +76,7 @@ metric_logger:
   _component_: torchtune.utils.metric_logging.DiskLogger
   log_dir: ${output_dir}
 log_every_n_steps: 1
-log_peak_memory_stats: False
+log_peak_memory_stats: True
 
 # Environment
 device: cuda
@@ -85,7 +86,7 @@ enable_activation_checkpointing: True
 # Profiler (disabled)
 profiler:
   _component_: torchtune.utils.setup_torch_profiler
-  enabled: False
+  enabled: True
 
   #Output directory of trace artifacts
   output_dir: ${output_dir}/profiling_outputs
@@ -95,7 +96,7 @@ profiler:
   cuda: True
 
   #trace options passed to `torch.profiler.profile`
-  profile_memory: False
+  profile_memory: True
   with_stack: False
   record_shapes: True
   with_flops: False
